@@ -7,3 +7,4 @@
 ### Ignore folders
 .vscode/
 __pycache__/
+Graphs/
