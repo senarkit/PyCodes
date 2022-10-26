@@ -1,7 +1,7 @@
 
 ### files to ignore
 *.pyc
-
+*.pk
 
 
 ### Ignore folders

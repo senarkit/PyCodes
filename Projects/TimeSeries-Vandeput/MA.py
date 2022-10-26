@@ -21,10 +21,10 @@ def moving_average(d, extra_periods=1, n=3):
 
     # create all t+1 forecasts
     for t in range(n, cols + 1):
-        f[t] = round(np.mean(d[t - n : t]), 2)
+        f[t] = round(np.mean(d[t-n: t]), 2)
 
     # forecast for all extra periods
-    f[cols + 1 :] = f[t]
+    f[cols+1:] = f[t]
     df = pd.DataFrame.from_dict({"Demand": d, "Forecast": f, "Error": d - f})
 
     return df
