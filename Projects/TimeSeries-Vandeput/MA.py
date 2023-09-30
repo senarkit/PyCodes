@@ -32,12 +32,12 @@ def moving_average(d, extra_periods=1, n=3):
 
     # forecast for all extra periods
     d[cols:] = np.nan
-    
+
     df_curr = pd.DataFrame.from_dict({"Demand": d[:cols], "Forecast": f[:cols], "Error": d[:cols] - f[:cols]})
     df_curr.index = cpy.index
-    df_future.index = pd.date_range(start=max(df_curr.index)+relativedelta(months=1, day=1),
-                                    periods=extra_periods, freq='M')
     df_future = pd.DataFrame.from_dict({"Demand": d[cols:], "Forecast": f[cols:], "Error": d[cols:] - f[cols:]})
+    df_future.index = pd.date_range(start=max(df_curr.index)+relativedelta(months=1, day=1),
+                                    periods=extra_periods, freq='MS')
     df_future.index = df_future.index.date
 
     df = pd.concat([df_curr, df_future])
