@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import datetime
+from dateutil.relativedelta import relativedelta
 
 
 def moving_average(d, extra_periods=1, n=3):
@@ -13,6 +15,7 @@ def moving_average(d, extra_periods=1, n=3):
         dataframe
     """
     # transform input into numpy array
+    cpy = d.copy()
     d = np.array(d)
     # input length
     cols = len(d)
@@ -29,6 +32,14 @@ def moving_average(d, extra_periods=1, n=3):
 
     # forecast for all extra periods
     d[cols:] = np.nan
-    df = pd.DataFrame.from_dict({"Demand": d, "Forecast": f, "Error": d - f})
+    
+    df_curr = pd.DataFrame.from_dict({"Demand": d[:cols], "Forecast": f[:cols], "Error": d[:cols] - f[:cols]})
+    df_curr.index = cpy.index
+    df_future.index = pd.date_range(start=max(df_curr.index)+relativedelta(months=1, day=1),
+                                    periods=extra_periods, freq='M')
+    df_future = pd.DataFrame.from_dict({"Demand": d[cols:], "Forecast": f[cols:], "Error": d[cols:] - f[cols:]})
+    df_future.index = df_future.index.date
+
+    df = pd.concat([df_curr, df_future])
 
     return df
