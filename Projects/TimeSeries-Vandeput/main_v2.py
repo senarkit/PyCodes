@@ -1,17 +1,18 @@
 import MA
 import pandas as pd
+import datetime
 import os
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 ###################### CONFIG ####################
-st_date = "2015-01-01"
-en_date = "2016-12-01"
+st_date = "2023-09-01"
+en_date = "2023-09-10"
 iter_name = "MA"
 
 ###################### CODE #####################
 ## Get Data
-data = pd.read_csv("Projects\TimeSeries-Vandeput\data\monthly_train.csv")
+data = pd.read_csv("Projects\TimeSeries-Vandeput\data\sample_train.csv")
 data["Date"] = pd.to_datetime(data.Date).apply(lambda x: x.date())
 data = data[(data.Date >= pd.to_datetime(st_date).date()) & 
             (data.Date <= pd.to_datetime(en_date).date())].reset_index(drop=True)
@@ -22,11 +23,12 @@ df = MA.moving_average(data.Demand, extra_periods=6, n=3)
 
 ## Exponential Smoothing
 
+print(df.tail(8))
 
 #### OOT Period
 pred_data = df[df.index > pd.to_datetime(en_date).date()]
-oot_data = pd.read_csv("Projects\TimeSeries-Vandeput\data\monthly_test.csv")
-oot_data.Date = pd.to_datetime(oot_data['Date']).apply(lambda x: x.date())
+oot_data = pd.read_csv("Projects\TimeSeries-Vandeput\data\sample_test.csv")
+oot_data.Date = oot_data.Date.apply(lambda x: datetime.datetime.strptime(x, "%d-%m-%Y").date())
 
 pred_data.index.name = 'Date'
 pred_data = pred_data.reset_index()[['Date','Forecast']].merge(oot_data, on='Date', how='left')
